@@ -1,0 +1,47 @@
+---
+- hosts: target-host
+#  connection: local
+  vars:
+    users:
+    - "Mark"
+    - "Jero"
+    - "Santi"
+  tasks:
+    - name: "Create user accounts"
+      user:
+        name: "{{ item }}"
+        groups: "admin"
+      with_items: "{{ users }}"
+    - name: "Add authorized keys"
+      authorized_key:
+        user: "{{ item }}"
+        key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+      with_items: "{{ users }}"
+    - name: "Allow admin users to sudo without a password"
+      lineinfile:
+        dest: "/etc/sudoers" # path: in version 2.3
+        state: "present"
+        regexp: "^%admin"
+        line: "%admin ALL=(ALL) NOPASSWD: ALL"
+    - name: Disable Password Authentication
+      lineinfile:
+           dest=/etc/ssh/sshd_config
+           regexp='^PasswordAuthentication'
+           line="PasswordAuthentication no"
+           state=present
+           backup=yes
+    - name: Disable Root Login
+      lineinfile:
+           dest=/etc/ssh/sshd_config
+           regexp='^PermitRootLogin'
+           line="PermitRootLogin no"
+           state=present
+           backup=yes
+      notify:
+       - restart ssh
+    
+  handlers:
+    - name: restart ssh
+      service:
+          name=sshd
+          state=restarted
