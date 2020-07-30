@@ -9,7 +9,7 @@ Ansible - Setup SSH keys and Create user accounts at the target host and deploy 
 5. Allow Admin group users to sudo without password ,Modify /etc/sudoers so the users can use sudo without entering a password
 6. Update sshd config to disable root login and restart ssh service
 
-After implemting all the above steps you will be able t login to the target host users from Ansible Master node without any password.
+After implemting all the above steps you will be able to login to the target host users from Ansible Master node without any password.
 
 Playbooks Execution
 
