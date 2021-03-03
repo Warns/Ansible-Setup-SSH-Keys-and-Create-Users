@@ -7,6 +7,10 @@
     - "Jero"
     - "Santi"
   tasks:
+    - name: Verify that admin group exists
+      group:
+        name: admin
+        state: present
     - name: "Create user accounts"
       user:
         name: "{{ item }}"
